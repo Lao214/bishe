@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mymusic.dao.IStockClassDao">
+    <resultMap id="BaseResultMap" type="com.example.mymusic.entity.StockClass">
+        <id 	 column="id"                           jdbcType="BIGINT"        property="id" />
+        <result  column="class_name"                   jdbcType="VARCHAR"       property="className"/>
+        <result  column="class_level"                  jdbcType="VARCHAR"       property="classLevel"/>
+        <result  column="class_parent"                 jdbcType="VARCHAR"       property="classParent"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,class_name,class_level,class_parent
+    </sql>
+
+    <sql id="As_Column_List">
+        t.id as id,
+        t.class_name   as className,
+        t.class_level  as classLevel ,
+        t.class_parent as classParent
+    </sql>
+
+    
+    <!-- 添加库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <insert id="addStockClass" parameterType="com.example.mymusic.entity.StockClass" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into stock_class(
+            class_name,class_level,class_parent
+        )
+        values(
+            #{className},#{classLevel},#{classParent}
+        )
+    </insert>
+
+    
+    <!-- 修改库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="updateStockClass" parameterType="com.example.mymusic.entity.StockClass">
+        update stock_class
+        <set>
+            <if test="className !=null and className != ''">
+                class_name = #{className},
+            </if>
+            <if test="classLevel !=null and classLevel != ''">
+                class_level = #{classLevel},
+            </if>
+            <if test="classParent !=null and classParent != ''">
+                class_parent = #{classParent},
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    
+    <!-- 删除库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <delete id="delStockClass" parameterType="java.lang.Long">
+        delete
+        from stock_class
+       where id = #{id}
+    </delete>
+
+
+    <!-- 查询库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <select id="queryStockClassByStockClassNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/> 
+        from stock_class
+        where id = #{id}
+    </select>
+
+    <!-- 分页查询库存表数量统计 -->
+    <select id="queryStockClassCountByCondition" parameterType="com.example.mymusic.entity.param.StockClassParam" resultType="java.lang.Long">
+        select count(1)
+        from stock_class
+        <include refid="sqlWhere"/>
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryStockClassByCondition" parameterType="com.example.mymusic.entity.param.StockClassParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from stock_class
+        <include refid="sqlWhere"/>
+        order by id
+        limit #{start},#{limit}
+    </select>
+
+
+    <!-- 分页查询   查询条件 -->
+    <sql id="sqlWhere">
+        <where>
+            1=1
+            <if test="className !=null and className != ''">
+                and  class_name    like "%"#{className}"%"
+            </if>
+            <if test="classLevel !=null and classLevel != ''">
+                and  class_level  like "%"#{classLevel}"%"
+            </if>
+            <if test="classParent !=null and classParent != ''">
+                and  class_parent like "%"#{classParent}"%"
+            </if>
+        </where>
+    </sql>
+
+
+</mapper>

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mymusic.dao.SongDao">
+
+    <resultMap type="com.example.mymusic.entity.Song" id="SongMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="songNo" column="song_no" jdbcType="VARCHAR"/>
+        <result property="songCnName" column="song_cn_name" jdbcType="VARCHAR"/>
+        <result property="songName" column="song_name" jdbcType="VARCHAR"/>
+        <result property="singerNo" column="singer_no" jdbcType="VARCHAR"/>
+        <result property="singer" column="singer" jdbcType="VARCHAR"/>
+        <result property="albumNo" column="album_no" jdbcType="VARCHAR"/>
+        <result property="album" column="album" jdbcType="VARCHAR"/>
+        <result property="composer" column="composer" jdbcType="VARCHAR"/>
+        <result property="arranger" column="arranger" jdbcType="VARCHAR"/>
+        <result property="songTime" column="song_time" jdbcType="TIMESTAMP"/>
+        <result property="songUrl" column="song_url" jdbcType="VARCHAR"/>
+        <result property="composerNo" column="composer_no" jdbcType="VARCHAR"/>
+        <result property="arrangerNo" column="arranger_no" jdbcType="VARCHAR"/>
+        <result property="likes" column="likes" jdbcType="INTEGER"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
+        <result property="commentNum" column="comment_num" jdbcType="INTEGER"/>
+        <result property="collect" column="collect" jdbcType="INTEGER"/>
+        <result property="lyric" column="lyric" jdbcType="VARCHAR"/>
+        <result property="lyricCn" column="lyric_cn" jdbcType="VARCHAR"/>
+        <result property="img" column="img" jdbcType="VARCHAR"/>
+        <result property="mv" column="mv" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="issueTime" column="issue_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="querySongBySongNo" resultMap="SongMap">
+        select id,
+               song_no,
+               song_cn_name,
+               song_name,
+               singer_no,
+               singer,
+               album_no,
+               album,
+               composer,
+               arranger,
+               song_time,
+               song_url,
+               composer_no,
+               arranger_no,
+               likes, comment, comment_num, collect, lyric, lyric_cn, img, mv, remark, status, create_time, update_time, issue_time
+        from music.song
+        where song_no = #{songNo}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SongMap">
+        select id,
+               song_no,
+               song_cn_name,
+               song_name,
+               singer_no,
+               singer,
+               album_no,
+               album,
+               composer,
+               arranger,
+               song_time,
+               song_url,
+               composer_no,
+               arranger_no, likes, comment, comment_num, collect, lyric, lyric_cn, img, mv, remark, status, create_time, update_time, issue_time
+        from music.song
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SongMap">
+        select
+        id, song_no, song_cn_name, song_name, singer_no, singer, album_no, album, composer, arranger, song_time,
+        song_url, composer_no, arranger_no, likes, comment, comment_num, collect, lyric, lyric_cn, img, mv, remark,
+        status, create_time, update_time, issue_time
+        from music.song
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="songNo != null and songNo != ''">
+                and song_no = #{songNo}
+            </if>
+            <if test="songCnName != null and songCnName != ''">
+                and song_cn_name = #{songCnName}
+            </if>
+            <if test="songName != null and songName != ''">
+                and song_name = #{songName}
+            </if>
+            <if test="singerNo != null and singerNo != ''">
+                and singer_no = #{singerNo}
+            </if>
+            <if test="singer != null and singer != ''">
+                and singer = #{singer}
+            </if>
+            <if test="albumNo != null and albumNo != ''">
+                and album_no = #{albumNo}
+            </if>
+            <if test="album != null and album != ''">
+                and album = #{album}
+            </if>
+            <if test="composer != null and composer != ''">
+                and composer = #{composer}
+            </if>
+            <if test="arranger != null and arranger != ''">
+                and arranger = #{arranger}
+            </if>
+            <if test="songTime != null">
+                and song_time = #{songTime}
+            </if>
+            <if test="songUrl != null and songUrl != ''">
+                and song_url = #{songUrl}
+            </if>
+            <if test="composerNo != null and composerNo != ''">
+                and composer_no = #{composerNo}
+            </if>
+            <if test="arrangerNo != null and arrangerNo != ''">
+                and arranger_no = #{arrangerNo}
+            </if>
+            <if test="likes != null">
+                and likes = #{likes}
+            </if>
+            <if test="comment != null and comment != ''">
+                and comment = #{comment}
+            </if>
+            <if test="commentNum != null">
+                and comment_num = #{commentNum}
+            </if>
+            <if test="collect != null">
+                and collect = #{collect}
+            </if>
+            <if test="lyric != null and lyric != ''">
+                and lyric = #{lyric}
+            </if>
+            <if test="lyricCn != null and lyricCn != ''">
+                and lyric_cn = #{lyricCn}
+            </if>
+            <if test="img != null and img != ''">
+                and img = #{img}
+            </if>
+            <if test="mv != null and mv != ''">
+                and mv = #{mv}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="issueTime != null">
+                and issue_time = #{issueTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="addSong" keyProperty="songNo" useGeneratedKeys="true">
+        insert into music.song(id, song_no, song_cn_name, song_name, singer_no, singer, album_no, album, composer, arranger,
+                               song_time, song_url, composer_no, arranger_no, likes, comment, comment_num, collect,
+                               lyric, lyric_cn, img, mv, remark, status, create_time, update_time, issue_time)
+        values (#{id}, #{songNo}, #{songCnName}, #{songName}, #{singerNo}, #{singer}, #{albumNo}, #{album}, #{composer},
+                #{arranger}, #{songTime}, #{songUrl}, #{composerNo},#{arrangerNo}, #{likes}, #{comment}, #{commentNum},
+                #{collect}, #{lyric}, #{lyricCn}, #{img}, #{mv}, #{remark}, #{status}, #{createTime}, #{updateTime},
+                #{issueTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="songNo" useGeneratedKeys="true">
+        insert into music.song(id, song_cn_name, song_name, singer_no, singer, album_no, album, composer, arranger,
+        song_time, song_url, composer_no, arranger_no, like, comment, comment_num, collect, lyric, lyric_cn, img, mv,
+        remark, status, create_time, update_time, issue_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.songCnName}, #{entity.songName}, #{entity.singerNo}, #{entity.singer},
+            #{entity.albumNo}, #{entity.album}, #{entity.composer}, #{entity.arranger}, #{entity.songTime},
+            #{entity.songUrl}, #{entity.composerNo}, #{entity.arrangerNo}, #{entity.like}, #{entity.comment},
+            #{entity.commentNum}, #{entity.collect}, #{entity.lyric}, #{entity.lyricCn}, #{entity.img}, #{entity.mv},
+            #{entity.remark}, #{entity.status}, #{entity.createTime}, #{entity.updateTime}, #{entity.issueTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="songNo" useGeneratedKeys="true">
+        insert into music.song(id,song_no, song_cn_name, song_name, singer_no, singer, album_no, album, composer, arranger,
+        song_time, song_url, composer_no, arranger_no, likes, comment, comment_num, collect, lyric, lyric_cn, img, mv,
+        remark, status, create_time, update_time, issue_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.songNo}, #{entity.songCnName}, #{entity.songName}, #{entity.singerNo},
+            #{entity.singer}, #{entity.albumNo}, #{entity.album}, #{entity.composer}, #{entity.arranger},
+            #{entity.songTime}, #{entity.songUrl}, #{entity.composerNo}, #{entity.arrangerNo}, #{entity.likes},
+            #{entity.comment}, #{entity.commentNum}, #{entity.collect}, #{entity.lyric}, #{entity.lyricCn},
+            #{entity.img}, #{entity.mv}, #{entity.remark}, #{entity.status}, #{entity.createTime}, #{entity.updateTime},
+            #{entity.issueTime})
+        </foreach>
+        on duplicate key update
+        id = values(id) , song_no = values(song_no) , song_cn_name = values(song_cn_name) , song_name =
+        values(song_name) , singer_no = values(singer_no) , singer = values(singer) , album_no = values(album_no) ,
+        album = values(album) , composer = values(composer) , arranger = values(arranger) , song_time =
+        values(song_time) , song_url = values(song_url) , composer_no = values(composer_no) , arranger_no =
+        values(arranger_no) , likes = values(likes) , comment = values(comment) , comment_num = values(comment_num) ,
+        collect = values(collect) , lyric = values(lyric) , lyric_cn = values(lyric_cn) , img = values(img) , mv =
+        values(mv) , remark = values(remark) , status = values(status) , create_time = values(create_time) , update_time
+        = values(update_time) , issue_time = values(issue_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="updateSong">
+        update music.song
+        <set>
+            <if test="id != null">
+                id = #{id},
+            </if>
+            <if test="songCnName != null and songCnName != ''">
+                song_cn_name = #{songCnName},
+            </if>
+            <if test="songName != null and songName != ''">
+                song_name = #{songName},
+            </if>
+            <if test="singerNo != null and singerNo != ''">
+                singer_no = #{singerNo},
+            </if>
+            <if test="singer != null and singer != ''">
+                singer = #{singer},
+            </if>
+            <if test="albumNo != null and albumNo != ''">
+                album_no = #{albumNo},
+            </if>
+            <if test="album != null and album != ''">
+                album = #{album},
+            </if>
+            <if test="composer != null and composer != ''">
+                composer = #{composer},
+            </if>
+            <if test="arranger != null and arranger != ''">
+                arranger = #{arranger},
+            </if>
+            <if test="songTime != null">
+                song_time = #{songTime},
+            </if>
+            <if test="songUrl != null and songUrl != ''">
+                song_url = #{songUrl},
+            </if>
+            <if test="composerNo != null and composerNo != ''">
+                composer_no = #{composerNo},
+            </if>
+            <if test="arrangerNo != null and arrangerNo != ''">
+                arranger_no = #{arrangerNo},
+            </if>
+            <if test="likes != null">
+                likes = #{likes},
+            </if>
+            <if test="comment != null and comment != ''">
+                comment = #{comment},
+            </if>
+            <if test="commentNum != null">
+                comment_num = #{commentNum},
+            </if>
+            <if test="collect != null">
+                collect = #{collect},
+            </if>
+            <if test="lyric != null and lyric != ''">
+                lyric = #{lyric},
+            </if>
+            <if test="lyricCn != null and lyricCn != ''">
+                lyric_cn = #{lyricCn},
+            </if>
+            <if test="img != null and img != ''">
+                img = #{img},
+            </if>
+            <if test="mv != null and mv != ''">
+                mv = #{mv},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="issueTime != null">
+                issue_time = #{issueTime},
+            </if>
+        </set>
+        where song_no = #{songNo}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteBySongNo">
+        delete
+        from music.song
+        where song_no = #{songNo}
+    </delete>
+
+
+    <!-- 删除优惠券表  -->
+    <update id="deleteSongBySongNo" parameterType="java.lang.String">
+        update music.song
+        <set>
+            status = 'delete',
+            update_time =now()
+            where song_no = #{songNo}
+        </set>
+    </update>
+
+    <!-- 分页查询订单表数量统计 -->
+    <select id="queryAllCount"  resultType="java.lang.Long">
+        select count(1)
+        from music.song
+    </select>
+
+</mapper>
+

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mymusic.dao.IStockAuditDao">
+    <resultMap id="BaseResultMap" type="com.example.mymusic.entity.StockAudit">
+        <id 	 column="id"                        jdbcType="BIGINT"        property="id" />
+        <result  column="stock_audit_no"            jdbcType="VARCHAR"       property="stockAuditNo"/>
+        <result  column="order_no"                  jdbcType="VARCHAR"       property="orderNo"/>
+        <result  column="stock_audit_name"          jdbcType="VARCHAR"       property="stockAuditName"/>
+        <result  column="one_type"                  jdbcType="VARCHAR"       property="oneType"/>
+        <result  column="second_type"               jdbcType="VARCHAR"       property="secondType"/>
+        <result  column="name"                      jdbcType="VARCHAR"       property="name"/>
+        <result  column="brand"                     jdbcType="VARCHAR"       property="brand"/>
+        <result  column="specs"                     jdbcType="VARCHAR"       property="specs"/>
+        <result  column="count"                     jdbcType="BIGINT"        property="count"/>
+        <result  column="apply_time"                jdbcType="TIMESTAMP"     property="applyTime"/>
+        <result  column="apply_user"                jdbcType="VARCHAR"       property="applyUser"/>
+        <result  column="audit_user"                jdbcType="VARCHAR"       property="auditUser"/>
+        <result  column="fail_msg"                  jdbcType="VARCHAR"       property="failMsg"/>
+        <result  column="status"                    jdbcType="VARCHAR"       property="status"/>
+        <result  column="remark"                    jdbcType="VARCHAR"       property="remark"/>
+        <result  column="create_time"               jdbcType="TIMESTAMP"     property="createTime"/>
+        <result  column="update_time"               jdbcType="TIMESTAMP"     property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_audit_no,order_no,stock_audit_name,one_type,second_type,name,brand,specs,count,apply_time,apply_user,audit_user,fail_msg,status,remark,create_time,update_time
+    </sql>
+
+    <sql id="As_Column_List">
+        t.id as id,t.stock_audit_no as stockAuditNo,t.order_no as orderNo,t.stock_audit_name as stockAuditName,t.one_type as oneType,t.second_type as secondType,t.name as name,t.brand as brand,t.specs as specs,t.count as count,t.apply_time as applyTime,t.apply_user as applyUser,t.audit_user as auditUser,t.fail_msg as failMsg,t.status as status,t.remark as remark,t.create_time as createTime,t.update_time as updateTime
+    </sql>
+
+    
+    <!-- 添加出库审核表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <insert id="addStockAudit" parameterType="com.example.mymusic.entity.StockAudit" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into b_stock_audit(
+            stock_audit_no,order_no,stock_audit_name,one_type,second_type,name,brand,specs,count,apply_time,apply_user,audit_user,fail_msg,status,remark,create_time,update_time
+        )
+        values(
+            #{stockAuditNo},#{orderNo},#{stockAuditName},#{oneType},#{secondType},#{name},#{brand},#{specs},#{count},now(),#{applyUser},#{auditUser},#{failMsg},#{status},#{remark},now(),now()
+        )
+    </insert>
+
+
+
+    
+    <!-- 修改出库审核表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="updateStockAudit" parameterType="com.example.mymusic.entity.StockAudit">
+        update b_stock_audit
+        <set>
+            <if test="stockAuditName !=null and stockAuditName != ''">
+                stock_audit_name = #{stockAuditName},
+            </if>
+            <if test="oneType !=null and oneType != ''">
+                one_type = #{oneType},
+            </if>
+            <if test="orderNo !=null and orderNo != ''">
+                order_no = #{orderNo},
+            </if>
+            <if test="secondType !=null and secondType != ''">
+                second_type = #{secondType},
+            </if>
+            <if test="name !=null and name != ''">
+                name = #{name},
+            </if>
+            <if test="brand !=null and brand != ''">
+                brand = #{brand},
+            </if>
+            <if test="specs !=null and specs != ''">
+                specs = #{specs},
+            </if>
+            <if test="count !=null ">
+                count = #{count},
+            </if>
+            <if test="applyTime !=null">
+                apply_time = #{applyTime},
+            </if>
+            <if test="applyUser !=null and applyUser != ''">
+                apply_user = #{applyUser},
+            </if>
+            <if test="auditUser !=null and auditUser != ''">
+                audit_user = #{auditUser},
+            </if>
+            <if test="failMsg !=null and failMsg != ''">
+                fail_msg = #{failMsg},
+            </if>
+            <if test="status !=null and status != ''">
+                status = #{status},
+            </if>
+            <if test="remark !=null and remark != ''">
+                remark = #{remark},
+            </if>
+            update_time = now()
+            where stock_audit_no = #{stockAuditNo}
+        </set>
+    </update>
+
+    
+    <!-- 删除出库审核表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="delStockAudit" parameterType="java.lang.String">
+          delete  from b_stock_audit
+          where stock_audit_no =#{stockAuditNo}
+    </update>
+
+    
+    <!-- 查询出库审核表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <select id="queryStockAuditByStockAuditNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/> 
+        from b_stock_audit
+        where stock_audit_no = #{stockAuditNo}
+    </select>
+
+
+    <!-- 查询出库审核表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <select id="queryStockAuditByStockAuditId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from b_stock_audit
+        where id = #{id}
+    </select>
+
+    <!-- 分页查询出库审核表数量统计 -->
+    <select id="queryStockAuditCountByCondition" parameterType="com.example.mymusic.entity.param.StockAuditParam" resultType="java.lang.Long">
+        select count(1)
+        from b_stock_audit
+        <include refid="sqlWhere"/>
+    </select>
+
+    <!-- 分页查询出库审核表 -->
+    <select id="queryStockAuditByCondition" parameterType="com.example.mymusic.entity.param.StockAuditParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_stock_audit
+        <include refid="sqlWhere"/>
+        order by update_time desc
+        limit #{start},#{limit}
+    </select>
+
+
+
+    <!-- 分页查询   查询条件 -->
+    <sql id="sqlWhere">
+        <where>
+            1=1
+            <if test="stockAuditName !=null and stockAuditName != ''">
+                and  stock_audit_name like "%"#{stockAuditName}"%"
+            </if>
+            <if test="oneType !=null and oneType != ''">
+                and  one_type like "%"#{oneType}"%"
+            </if>
+            <if test="orderNo !=null and orderNo != ''">
+                and  order_no like "%"#{orderNo}"%"
+            </if>
+            <if test="secondType !=null and secondType != ''">
+                and  second_type like "%"#{secondType}"%"
+            </if>
+            <if test="name !=null and name != ''">
+                and  name like "%"#{name}"%"
+            </if>
+            <if test="brand !=null and brand != ''">
+                and  brand like "%"#{brand}"%"
+            </if>
+            <if test="specs !=null and specs != ''">
+                and  specs like "%"#{specs}"%"
+            </if>
+            <if test="count !=null and count != 0">
+                  and   count  = #{count}
+            </if>
+            <if test="applyTime !=null and applyTime != ''">
+                and  apply_time = #{applyTime}
+            </if>
+            <if test="applyUser !=null and applyUser != ''">
+                and  apply_user like "%"#{applyUser}"%"
+            </if>
+            <if test="auditUser !=null and auditUser != ''">
+                and  audit_user like "%"#{auditUser}"%"
+            </if>
+            <if test="failMsg !=null and failMsg != ''">
+                and  fail_msg  like "%"#{failMsg}"%"
+            </if>
+            <if test="status !=null and status != ''">
+                and  status like "%"#{status}"%"
+            </if>
+            <if test="remark !=null and remark != ''">
+                and  remark like "%"#{remark}"%"
+            </if>
+        </where>
+    </sql>
+
+
+</mapper>

@@ -1,0 +1,27 @@
+/* 按钮风格重定义 */
+.el-button--goon {
+    color: rgb(214, 120, 12);
+    background-color: #031e3b;
+    border-color: #031e3b;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 20px;
+  }
+  .el-button--goon:focus,
+  .el-button--goon:hover {
+    color: rgb(214, 120, 12);
+    background-color: #0b3869;
+    border-color: #0b3869;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 20px;
+  }
+  .el-button--goon:active {
+    color: rgb(214, 120, 12);
+    background-color: #084383;
+    border-color: #084383;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 20px;
+  }
+  /* 按钮风格重定义 */

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mymusic.dao.IStockInDao">
+    <resultMap id="BaseResultMap" type="com.example.mymusic.entity.StockIn">
+        <id 	 column="id"                        jdbcType="BIGINT"        property="id" />
+        <result  column="stock_in_no"               jdbcType="VARCHAR"       property="stockInNo"/>
+        <result  column="order_no"                  jdbcType="VARCHAR"       property="orderNo"/>
+        <result  column="stock_in_name"             jdbcType="VARCHAR"       property="stockInName"/>
+        <result  column="one_type"                  jdbcType="VARCHAR"       property="oneType"/>
+        <result  column="second_type"               jdbcType="VARCHAR"       property="secondType"/>
+        <result  column="name"                      jdbcType="VARCHAR"       property="name"/>
+        <result  column="brand"                     jdbcType="VARCHAR"       property="brand"/>
+        <result  column="specs"                     jdbcType="VARCHAR"       property="specs"/>
+        <result  column="count"                     jdbcType="BIGINT"        property="count"/>
+        <result  column="in_time"                   jdbcType="TIMESTAMP"     property="inTime"/>
+        <result  column="overdue_time"              jdbcType="TIMESTAMP"     property="overdueTime"/>
+        <result  column="in_user"                   jdbcType="VARCHAR"       property="inUser"/>
+        <result  column="status"                    jdbcType="VARCHAR"       property="status"/>
+        <result  column="remark"                    jdbcType="VARCHAR"       property="remark"/>
+        <result  column="create_time"               jdbcType="TIMESTAMP"     property="createTime"/>
+        <result  column="update_time"               jdbcType="TIMESTAMP"     property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_in_no,stock_in_name,order_no,one_type,second_type,name,brand,specs,count,in_time,overdue_time,in_user,status,remark,create_time,update_time
+    </sql>
+
+    <sql id="As_Column_List">
+        t.id as id,t.stock_in_no as stockInNo,t.order_no as orderNo,t.stock_in_name as stockInName,t.one_type as oneType,t.second_type as secondType,t.name as name,t.brand as brand,t.specs as specs,t.count as count,t.in_time as inTime,t.overdue_time as overdueTime,t.in_user as inUser,t.status as status,t.remark as remark,t.create_time as createTime,t.update_time as updateTime
+    </sql>
+
+    
+    <!-- 添加入库表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <insert id="addStockIn" parameterType="com.example.mymusic.entity.StockIn" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into b_stock_in(
+            stock_in_no,stock_in_name,order_no,one_type,second_type,name,brand,specs,count,in_time,overdue_time,in_user,status,remark,create_time,update_time
+        )
+        values(
+            #{stockInNo},#{stockInName},#{orderNo},#{oneType},#{secondType},#{name},#{brand},#{specs},#{count},#{inTime},#{overdueTime},#{inUser},#{status},#{remark},now(),now()
+        )
+    </insert>
+
+    
+    <!-- 修改入库表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="updateStockIn" parameterType="com.example.mymusic.entity.StockIn">
+        update b_stock_in
+        <set>
+            <if test="stockInName !=null and stockInName != ''">
+                stock_in_name = #{stockInName},
+            </if>
+            <if test="oneType !=null and oneType != ''">
+                one_type = #{oneType},
+            </if>
+            <if test="orderNo !=null and orderNo != ''">
+                order_no = #{orderNo},
+            </if>
+            <if test="secondType !=null and secondType != ''">
+                second_type = #{secondType},
+            </if>
+            <if test="name !=null and name != ''">
+                name = #{name},
+            </if>
+            <if test="brand !=null and brand != ''">
+                brand = #{brand},
+            </if>
+            <if test="specs !=null and specs != ''">
+                specs = #{specs},
+            </if>
+            <if test="count !=null ">
+                count = #{count},
+            </if>
+            <if test="inTime !=null and inTime != ''">
+                in_time = #{inTime},
+            </if>
+            <if test="overdueTime !=null and overdueTime != ''">
+                overdue_time = #{overdueTime},
+            </if>
+            <if test="inUser !=null and inUser != ''">
+                in_user = #{inUser},
+            </if>
+            <if test="status !=null and status != ''">
+                status = #{status},
+            </if>
+            <if test="remark !=null and remark != ''">
+                remark = #{remark},
+            </if>
+            update_time = now()
+            where stock_in_no = #{stockInNo}
+        </set>
+    </update>
+
+    
+    <!-- 删除入库表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="delStockIn" parameterType="java.lang.String">
+        update b_stock_in
+        <set>
+        status='delete',
+            update_time = now()
+            where stock_in_no = #{stockInNo}
+        </set>
+    </update>
+
+    
+    <!-- 查询入库表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <select id="queryStockInByStockInNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/> 
+        from b_stock_in
+        where stock_in_no = #{stockInNo}
+    </select>
+
+    <!-- 分页查询入库表数量统计 -->
+    <select id="queryStockInCountByCondition" parameterType="com.example.mymusic.entity.param.StockInParam" resultType="java.lang.Long">
+        select count(1)
+        from b_stock_in
+        <include refid="sqlWhere"/>
+    </select>
+
+    <!-- 分页查询入库表 -->
+    <select id="queryStockInByCondition" parameterType="com.example.mymusic.entity.param.StockInParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_stock_in
+        <include refid="sqlWhere"/>
+        order by update_time desc
+        limit #{start},#{limit}
+    </select>
+
+
+<!--    &lt;!&ndash; 根据订单类型查询同类订单    @author 劳威锟     @date 2021年09月05日 21时11分23秒     &ndash;&gt;-->
+<!--    <select id="queryStockCountByStockType" parameterType="java.lang.String" resultType="java.lang.Long">-->
+<!--        select-->
+<!--            count(1)-->
+<!--        from t_order_form-->
+<!--        where stock_Type = #{stockType}-->
+<!--    </select>-->
+
+
+    <!-- 分页查询   查询条件 -->
+    <sql id="sqlWhere">
+        <where>
+            1=1
+            <if test="stockInName !=null and stockInName != ''">
+                and  stock_in_name  like "%"#{stockInName}"%"
+            </if>
+            <if test="oneType !=null and oneType != ''">
+                and  one_type  like "%"#{oneType}"%"
+            </if>
+            <if test="orderNo !=null and orderNo != ''">
+                and  order_no = #{orderNo}
+            </if>
+            <if test="secondType !=null and secondType != ''">
+                and  second_type like "%"#{secondType}"%"
+            </if>
+            <if test="name !=null and name != ''">
+                and  name    like "%"#{name}"%"
+            </if>
+            <if test="brand !=null and brand != ''">
+                and  brand   like "%"#{brand}"%"
+            </if>
+            <if test="specs !=null and specs != ''">
+                and  specs  like "%"#{specs}"%"
+            </if>
+            <if test="count !=null and count != 0">
+                and   count  = #{count}
+            </if>
+            <if test="inTime !=null and inTime != ''">
+                and  in_time = #{inTime}
+            </if>
+            <if test="overdueTime !=null and overdueTime != ''">
+                and  overdue_time = #{overdueTime}
+            </if>
+            <if test="inUser !=null and inUser != ''">
+                and  in_user   like "%"#{inUser}"%"
+            </if>
+            <if test="status !=null and status != ''">
+                and  status  like "%"#{status}"%"
+            </if>
+            <if test="remark !=null and remark != ''">
+                and  remark  like "%"#{remark}"%"
+            </if>
+        </where>
+    </sql>
+
+
+</mapper>

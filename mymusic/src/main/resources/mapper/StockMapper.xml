@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mymusic.dao.IStockDao">
+    <resultMap id="BaseResultMap" type="com.example.mymusic.entity.Stock">
+        <id 	 column="id"                        jdbcType="BIGINT"        property="id" />
+        <result  column="stock_no"                  jdbcType="VARCHAR"       property="stockNo"/>
+        <result  column="stock_name"                jdbcType="VARCHAR"       property="stockName"/>
+        <result  column="one_type"                  jdbcType="VARCHAR"       property="oneType"/>
+        <result  column="second_type"               jdbcType="VARCHAR"       property="secondType"/>
+        <result  column="name"                      jdbcType="VARCHAR"       property="name"/>
+        <result  column="brand"                     jdbcType="VARCHAR"       property="brand"/>
+        <result  column="specs"                     jdbcType="VARCHAR"       property="specs"/>
+        <result  column="count"                     jdbcType="BIGINT"        property="count"/>
+        <result  column="status"                    jdbcType="VARCHAR"       property="status"/>
+        <result  column="remark"                    jdbcType="VARCHAR"       property="remark"/>
+        <result  column="create_time"               jdbcType="TIMESTAMP"     property="createTime"/>
+        <result  column="update_time"               jdbcType="TIMESTAMP"     property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_no,stock_name,one_type,second_type,name,brand,specs,count,status,remark,create_time,update_time
+    </sql>
+
+    <sql id="As_Column_List">
+        t.id as id,t.stock_no as stockNo,t.stock_name as stockName,t.one_type as oneType,t.second_type as secondType,t.name as name,t.brand as brand,t.specs as specs,t.count as count,t.status as status,t.remark as remark,t.create_time as createTime,t.update_time as updateTime
+    </sql>
+
+    
+    <!-- 添加库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <insert id="addStock" parameterType="com.example.mymusic.entity.Stock" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into b_stock(
+            stock_no,stock_name,one_type,second_type,name,brand,specs,count,status,remark,create_time,update_time
+        )
+        values(
+            #{stockNo},#{stockName},#{oneType},#{secondType},#{name},#{brand},#{specs},#{count},#{status},#{remark},now(),now()
+        )
+    </insert>
+
+    
+    <!-- 修改库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="updateStock" parameterType="com.example.mymusic.entity.Stock">
+        update b_stock
+        <set>
+            <if test="stockName !=null and stockName != ''">
+                stock_name = #{stockName},
+            </if>
+            <if test="oneType !=null and oneType != ''">
+                one_type = #{oneType},
+            </if>
+            <if test="secondType !=null and secondType != ''">
+                second_type = #{secondType},
+            </if>
+            <if test="name !=null and name != ''">
+                name = #{name},
+            </if>
+            <if test="brand !=null and brand != ''">
+                brand = #{brand},
+            </if>
+            <if test="specs !=null and specs != ''">
+                specs = #{specs},
+            </if>
+            <if test="count !=null ">
+                count = #{count},
+            </if>
+            <if test="status !=null and status != ''">
+                status = #{status},
+            </if>
+            <if test="remark !=null and remark != ''">
+                remark = #{remark},
+            </if>
+            update_time = now()
+            where stock_no = #{stockNo}
+        </set>
+    </update>
+
+    
+    <!-- 删除库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <delete id="delStock" parameterType="java.lang.String">
+        delete
+        from b_stock
+       where stock_no = #{stockNo}
+    </delete>
+
+
+    <!-- 恢复分类     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="recoverStock" parameterType="java.lang.String">
+        update b_stock
+        <set>
+            status='common',
+            update_time = now()
+            where stock_no = #{stockNo}
+        </set>
+    </update>
+
+    
+    <!-- 查询库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <select id="queryStockByStockNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/> 
+        from b_stock
+        where stock_no = #{stockNo}
+    </select>
+
+
+    <!-- 查询库存表     @author 劳威锟     @date 2021年09月28日 18时19分06秒     -->
+    <select id="queryStockByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from b_stock
+        where order_no = #{orderNo}
+    </select>
+
+
+    <!-- 分页查询库存表数量统计 -->
+    <select id="queryStockCountByCondition" parameterType="com.example.mymusic.entity.param.StockParam" resultType="java.lang.Long">
+        select count(1)
+        from b_stock
+        <include refid="sqlWhere"/>
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryStockByCondition" parameterType="com.example.mymusic.entity.param.StockParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_stock
+        <include refid="sqlWhere"/>
+        order by id
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryStockByConditionOneType" parameterType="com.example.mymusic.entity.param.StockParam" resultMap="BaseResultMap">
+        select
+        id as value,stock_no,stock_name,one_type as label,second_type,name,brand,specs,count,status,remark,create_time,update_time
+        from b_stock
+        <include refid="sqlWhere"/>
+
+        order by value
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryStockByConditionSecondType" parameterType="com.example.mymusic.entity.param.StockParam" resultMap="BaseResultMap">
+        select
+        id as value,stock_no,stock_name,one_type,second_type as label,name,brand,specs,count,status,remark,create_time,update_time
+        from b_stock
+        <include refid="sqlWhere"/>
+        order by value
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryStockByConditionName" parameterType="com.example.mymusic.entity.param.StockParam" resultMap="BaseResultMap">
+        select
+        id as value,stock_no,stock_name,one_type,second_type,name as label,brand,specs,count,status,remark,create_time,update_time
+        from b_stock
+        <include refid="sqlWhere"/>
+        order by value
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryStockByConditionBrand" parameterType="com.example.mymusic.entity.param.StockParam" resultMap="BaseResultMap">
+        select
+        id as value,stock_no,stock_name,one_type,second_type,name,brand as label,specs,count,status,remark,create_time,update_time
+        from b_stock
+        <include refid="sqlWhere"/>
+        order by value
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryStockByConditionSpecs" parameterType="com.example.mymusic.entity.param.StockParam" resultMap="BaseResultMap">
+        select
+        id as value,stock_no,stock_name,one_type,second_type,name,brand,specs as label,count,status,remark,create_time,update_time
+        from b_stock
+        <include refid="sqlWhere"/>
+        order by value
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 根据地址物品        -->
+    <select id="queryStockByAddress" parameterType="com.example.mymusic.entity.param.StockParam" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from b_stock
+        where stock_name =#{stockName}
+    </select>
+
+
+    <!-- 根据地址查询物品统计 -->
+    <select id="queryStockCountByAddress" parameterType="com.example.mymusic.entity.param.StockParam" resultType="java.lang.Long">
+        select count(1)
+        from b_stock
+        where stock_name =#{stockName}
+    </select>
+
+    <!-- 根据一级分类查询订单数量统计 -->
+    <select id="querySecondCountByOneType" parameterType="com.example.mymusic.entity.param.StockParam" resultType="java.lang.Long">
+        select count(1)
+        from b_stock
+        where one_type = #{oneType}
+    </select>
+
+    <!-- 根据一级菜单查询二级菜单      -->
+    <select id="querySecondByOneType" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select DISTINCT
+            second_type
+        from b_stock
+        where one_type = #{oneType}
+    </select>
+
+    <!-- 根据二级菜单查询库存数量统计 -->
+    <select id="queryStockCountBySecondType" parameterType="com.example.mymusic.entity.param.StockParam" resultType="java.lang.Long">
+        select count(1)
+        from b_stock
+        where second_type = #{secondType}
+    </select>
+
+    <!-- 根据二级菜单查询库存        -->
+    <select id="queryStockBySecondType" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from b_stock
+        where second_type = #{secondType}
+    </select>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into music.b_stock(id, stock_no,
+           stock_name,one_type,second_type,
+           name,brand,specs,count,status,remark,create_time,update_time)
+        values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.id}, #{entity.stockNo}, #{entity.stockName}, #{entity.oneType}, #{entity.secondType},
+            #{entity.name}, #{entity.brand}, #{entity.specs}, #{entity.count}, #{entity.status},
+            #{entity.remark}, #{entity.createTime}, now())
+        </foreach>
+        on duplicate key update
+        id = values(id) , stock_no = values(stock_no) , stock_name = values(stock_name) , one_type = values(one_type) ,
+        second_type = values(second_type) , name = values(name) , brand = values(brand) ,
+        specs = values(specs) , count = values(count) , status = values(status) , remark = values(remark) ,
+        create_time = values(create_time) , update_time = values(update_time)
+    </insert>
+
+
+
+    <!-- 分页查询   查询条件 -->
+    <sql id="sqlWhere">
+        <where>
+            1=1
+            <if test="stockName !=null and stockName != ''">
+                and  stock_name    like "%"#{stockName}"%"
+            </if>
+            <if test="oneType !=null and oneType != ''">
+                and  one_type  like "%"#{oneType}"%"
+            </if>
+            <if test="secondType !=null and secondType != ''">
+                and  second_type like "%"#{secondType}"%"
+            </if>
+            <if test="name !=null and name != ''">
+                and  name  like "%"#{name}"%"
+            </if>
+            <if test="brand !=null and brand != ''">
+                and  brand  like "%"#{brand}"%"
+            </if>
+            <if test="specs !=null and specs != ''">
+                and  specs like "%"#{specs}"%"
+            </if>
+            <if test="count !=null and count != 0">
+                and   count  = #{count}
+            </if>
+            <if test="status !=null and status != ''">
+                and  status  like "%"#{status}"%"
+            </if>
+            <if test="remark !=null and remark != ''">
+                and  remark  like "%"#{remark}"%"
+            </if>
+        </where>
+    </sql>
+
+
+    <select id="queryClassParent" resultType="com.example.mymusic.entity.EcahrtsClass">
+    SELECT t2.days,t3.gptimes,t3.classParent from
+    (SELECT  @cdate := date_add(@cdate,interval -1 day) days
+    from (SELECT @cdate := CURDATE() from music.song limit 30)t1
+    ) t2
+
+    LEFT JOIN
+
+    (  SELECT sum(count) as classParent,DATE_FORMAT(update_time,'%Y-%m-%d') as gptimes
+    from    music.b_stock_audit
+    where   count> 0
+    and DATE(update_time)>=DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY gptimes
+    ) t3
+    ON t2.days =t3.gptimes
+    order by t2.days
+    </select>
+
+
+    <select id="queryClassType" resultType="com.example.mymusic.entity.EcahrtsPie">
+       SELECT  one_type as name,sum(count) as VALUE	from b_stock GROUP BY one_type
+    </select>
+</mapper>

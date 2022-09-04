@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mymusic.dao.IAreaDao">
+    <resultMap id="BaseResultMap" type="com.example.mymusic.entity.Area">
+        <id 	 column="id"                         jdbcType="INTEGER"           property="id" />
+        <result  column="area_no"                    jdbcType="VARCHAR"           property="areaNo"/>
+        <result  column="parent_area_no"             jdbcType="VARCHAR"           property="parentAreaNo"/>
+        <result  column="area_name"                  jdbcType="VARCHAR"           property="areaName"/>
+        <result  column="area_type"                  jdbcType="INTEGER"           property="areaType"/>
+        <result  column="area_firstspell"            jdbcType="VARCHAR"           property="areaFirstspell"/>
+        <result  column="area_pinyin"                jdbcType="VARCHAR"           property="areaPinyin"/>
+        <result  column="area_spellindex"            jdbcType="VARCHAR"           property="areaSpellindex"/>
+        <result  column="area_code"                  jdbcType="VARCHAR"           property="areaCode"/>
+        <result  column="member_no"                  jdbcType="VARCHAR"           property="memberNo"/>
+        <result  column="postage"                    jdbcType="INTEGER"           property="postage" />
+        <result  column="status"                     jdbcType="VARCHAR"           property="status"/>
+        <result  column="remark"                     jdbcType="VARCHAR"           property="remark"/>
+        <result  column="create_time"                jdbcType="TIMESTAMP"         property="createTime"/>
+        <result  column="update_time"                jdbcType="TIMESTAMP"         property="updateTime"/>
+    </resultMap>
+
+
+
+    <resultMap id="AreaFirstSpellMap" type="com.example.mymusic.entity.dto.AreaDTO">
+        <id 	 column="id"                         jdbcType="INTEGER"           property="id" />
+        <result  column="area_name"                  jdbcType="VARCHAR"           property="areaName"/>
+        <result  column="area_firstspell"            jdbcType="VARCHAR"           property="areaFirstspell"/>
+    </resultMap>
+    
+
+    <sql id="Base_Column_List">
+        id,area_no,parent_area_no,area_name,area_type,area_firstspell,area_pinyin,area_spellindex,area_code,member_no,postage,status,remark,create_time,update_time
+    </sql>
+
+    <sql id="As_Column_List">
+        t.id as id,t.area_no as areaNo,t.parent_area_no as parentAreaNo,t.area_name as areaName,t.area_type as areaType,t.area_firstspell as areaFirstspell,t.area_pinyin as areaPinyin,t.area_spellindex as areaSpellindex,t.area_code as areaCode,t.member_no as memberNo,t.postage as postage,t.status as status,t.remark as remark,t.create_time as createTime,t.update_time as updateTime
+    </sql>
+
+    <!-- 添加地区     @author 聂枫     @date 2018年09月18日 11时58分55秒     -->
+    <insert id="addArea" parameterType="com.example.mymusic.entity.Area" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into b_area(
+            area_no,parent_area_no,area_name,area_type,area_firstspell,area_pinyin,area_spellindex,area_code,member_no,postage,status,remark,create_time,update_time
+        )
+        values(
+            #{areaNo},#{parentAreaNo},#{areaName},#{areaType},#{areaFirstspell},#{areaPinyin},#{areaSpellindex},#{areaCode},#{memberNo},0,#{status},#{remark},now(),now()
+        )
+    </insert>
+
+    <!-- 修改地区     @author 聂枫     @date 2018年09月18日 11时58分55秒     -->
+    <update id="updateArea" parameterType="com.example.mymusic.entity.Area">
+        update b_area
+        <set>
+            <if test="parentAreaNo !=null and parentAreaNo != ''">
+                parent_area_no = #{parentAreaNo},
+            </if>
+            <if test="areaName !=null and areaName != ''">
+                area_name = #{areaName},
+            </if>
+            <if test="areaType !=null ">
+                area_type = #{areaType},
+            </if>
+            <if test="areaFirstspell !=null and areaFirstspell != ''">
+                area_firstspell = #{areaFirstspell},
+            </if>
+            <if test="areaPinyin !=null and areaPinyin != ''">
+                area_pinyin = #{areaPinyin},
+            </if>
+            <if test="areaSpellindex !=null and areaSpellindex != ''">
+                area_spellindex = #{areaSpellindex},
+            </if>
+            <if test="areaCode !=null and areaCode != ''">
+                area_code = #{areaCode},
+            </if>
+            <if test="memberNo !=null and memberNo != ''">
+                member_no = #{memberNo},
+            </if>
+            <if test="postage !=null ">
+                postage = #{postage},
+            </if>
+            <if test="status !=null and status != ''">
+                status = #{status},
+            </if>
+            <if test="remark !=null and remark != ''">
+                remark = #{remark},
+            </if>
+            update_time = now()
+            where area_no = #{areaNo}
+        </set>
+    </update>
+
+    <!-- 删除地区     @author 聂枫     @date 2018年09月18日 11时58分55秒     -->
+    <update id="delArea" parameterType="java.lang.String">
+        update b_area
+        <set>
+            status='1',
+            update_time = now()
+            where area_no = #{areaNo}
+        </set>
+    </update>
+    
+    <!-- 根据区域编号查询   @author劳威锟      @date 2018年09月10日 15时52分34秒     -->
+    <select id="queryAreaByAreaNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_area where area_no = #{areaNo}
+    </select>
+
+
+    <!-- 根据城市查询区县  @author劳威锟      @date 2018年09月10日 15时52分34秒     -->
+    <select id="subCityQueryByCity" parameterType="java.lang.String" resultMap="AreaFirstSpellMap">
+        select b.id, b.area_firstspell,b.area_name
+        from b_area b where b.area_name!='市辖区' and EXISTS(select t.area_no from b_area t where b.parent_area_no=t.area_no  
+        and t.area_type=2 
+             and t.area_name=#{areaName}) and b.status='0' 
+    </select>
+
+    <!-- 根据城市查询区县 @author劳威锟      @date 2018年09月10日 15时52分34秒     -->
+    <select id="subCityQueryByPinyin" parameterType="java.lang.String" resultMap="AreaFirstSpellMap">
+     select b.id, b.area_firstspell,b.area_name
+        from b_area b where b.area_name!='市辖区' and EXISTS(select t.area_no from b_area t where b.parent_area_no=t.area_no 
+        and t.area_type=2 
+        and t.area_pinyin like CONCAT(#{areaName}, '%')) and b.status='0' 
+    </select>
+
+
+    <!-- 获取拼音首字母城市     @author劳威锟      @date 2018年09月10日 15时52分34秒     -->
+    <select id="cityQueryByFirstSpell" resultMap="AreaFirstSpellMap">
+        select area_firstspell,id,area_name
+        from b_area 
+        where <![CDATA[
+		  			area_type>1 and area_type<4 
+		  		]]> and area_firstspell !='' and status='0'
+        order by area_firstspell,area_type 
+    </select>
+
+    <!-- 查询count   @author劳威锟      @date 2018年09月10日 15时52分34秒     -->
+    <select id="queryAreaCountByCondition"  parameterType="com.example.mymusic.entity.param.AreaParam" resultType="java.lang.Long">
+        select count(1)
+        from b_area
+        <include refid="sqlWhere"/>
+    </select>
+    
+    <!-- 分页查询   @author劳威锟      @date 2018年09月10日 15时52分34秒     -->
+    <select id="queryAreaByCondition"  parameterType="com.example.mymusic.entity.param.AreaParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_area
+        <include refid="sqlWhere"/>
+        order by id
+        limit #{start},#{limit}
+    </select>
+
+
+    <!-- 分页查询   @author劳威锟      @date 2018年09月10日 15时52分34秒     -->
+    <select id="queryAreaByConditionApp"  parameterType="com.example.mymusic.entity.param.AreaParam" resultMap="BaseResultMap">
+        select id as value,
+        area_no,
+        parent_area_no,
+        area_name as label,
+        area_type,
+        area_pinyin,
+        area_spellindex
+        from b_area
+        <include refid="sqlWhere"/>
+        order by id
+    </select>
+
+    <!-- 查询count   @author劳威锟      @date 2019年09月23日 15时52分34秒     -->
+    <select id="queryAllAreaCountByCondition"  parameterType="com.example.mymusic.entity.param.AreaParam" resultType="java.lang.Long">
+        select count(1)
+        from b_area t
+        left join b_member bm on bm.member_no = t.member_no
+        <include refid="tSqlWhere"/>
+    </select>
+
+    <!-- 分页查询   @author劳威锟      @date 2019年09月23日 15时52分34秒     -->
+    <select id="queryAllAreaByCondition"  parameterType="com.example.mymusic.entity.param.AreaParam" resultType="com.example.mymusic.entity.dto.AreaDTO">
+        select <include refid="As_Column_List"/>,bm.member_name as memberName,bm.mobile_no as mobileNo
+        from b_area t
+        left join b_member bm on bm.member_no = t.member_no
+        <include refid="tSqlWhere"/>
+        order by t.id
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 查询   @author劳威锟      @date 2019年09月22日 15时52分34秒     -->
+    <select id="getAreaByAreaName"  parameterType="com.example.mymusic.entity.param.AreaParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_area
+        <include refid="jsWhere"/>
+        order by id
+        limit 1
+    </select>
+    <!-- 结算查询   查询条件 -->
+    <sql id="jsWhere">
+        <where>
+            1=1 and member_no is not null
+            <if test="parentAreaNo !=null and parentAreaNo != ''">
+                and  parent_area_no = #{parentAreaNo}
+            </if>
+            <if test="areaName !=null and areaName != ''">
+                and  area_name = #{areaName}
+            </if>
+            <if test="areaType !=null and areaType != 0">
+                and  area_type = #{areaType}
+            </if>
+            <if test="areaFirstspell !=null and areaFirstspell != ''">
+                and  area_firstspell = #{areaFirstspell}
+            </if>
+            <if test="areaPinyin !=null and areaPinyin != ''">
+                and  area_pinyin = #{areaPinyin}
+            </if>
+            <if test="areaSpellindex !=null and areaSpellindex != ''">
+                and  area_spellindex = #{areaSpellindex}
+            </if>
+            <if test="areaCode !=null and areaCode != ''">
+                and  area_code = #{areaCode}
+            </if>
+            <if test="memberNo !=null and memberNo != ''">
+                and  member_no = #{memberNo}
+            </if>
+            <if test="postage !=null">
+                and  postage = #{postage}
+            </if>
+            <if test="status !=null and status != ''">
+                and  status = #{status}
+            </if>
+            <if test="remark !=null and remark != ''">
+                and  remark = #{remark}
+            </if>
+        </where>
+    </sql>
+    <!-- 分页查询   查询条件 -->
+    <sql id="sqlWhere">
+        <where>
+            1=1
+            <if test="parentAreaNo !=null and parentAreaNo != ''">
+                and  parent_area_no = #{parentAreaNo}
+            </if>
+            <if test="areaName !=null and areaName != ''">
+                and  area_name = #{areaName}
+            </if>
+            <if test="areaType !=null and areaType != 0">
+                and  area_type = #{areaType}
+            </if>
+            <if test="areaFirstspell !=null and areaFirstspell != ''">
+                and  area_firstspell = #{areaFirstspell}
+            </if>
+            <if test="areaPinyin !=null and areaPinyin != ''">
+                and  area_pinyin = #{areaPinyin}
+            </if>
+            <if test="areaSpellindex !=null and areaSpellindex != ''">
+                and  area_spellindex = #{areaSpellindex}
+            </if>
+            <if test="areaCode !=null and areaCode != ''">
+                and  area_code = #{areaCode}
+            </if>
+            <if test="memberNo !=null and memberNo != ''">
+                and  member_no = #{memberNo}
+            </if>
+            <if test="postage !=null">
+                and  postage = #{postage}
+            </if>
+            <if test="status !=null and status != ''">
+                and  status = #{status}
+            </if>
+            <if test="remark !=null and remark != ''">
+                and  remark = #{remark}
+            </if>
+        </where>
+    </sql>
+
+
+    <!-- 分页查询   查询条件 -->
+    <sql id="tSqlWhere">
+        <where>
+            1=1
+            <if test="parentAreaNo !=null and parentAreaNo != ''">
+                and  t.parent_area_no = #{parentAreaNo}
+            </if>
+            <if test="areaName !=null and areaName != ''">
+                and  t.area_name = #{areaName}
+            </if>
+            <if test="areaType !=null and areaType != 0">
+                and  t.area_type = #{areaType}
+            </if>
+            <if test="areaFirstspell !=null and areaFirstspell != ''">
+                and  t.area_firstspell = #{areaFirstspell}
+            </if>
+            <if test="areaPinyin !=null and areaPinyin != ''">
+                and  t.area_pinyin = #{areaPinyin}
+            </if>
+            <if test="areaSpellindex !=null and areaSpellindex != ''">
+                and  t.area_spellindex = #{areaSpellindex}
+            </if>
+            <if test="areaCode !=null and areaCode != ''">
+                and  t.area_code = #{areaCode}
+            </if>
+            <if test="memberNo !=null and memberNo != ''">
+                and  t.member_no = #{memberNo}
+            </if>
+            <if test="postage !=null">
+                and  t.postage = #{postage}
+            </if>
+            <if test="status !=null and status != ''">
+                and  t.status = #{status}
+            </if>
+            <if test="remark !=null and remark != ''">
+                and  t.remark = #{remark}
+            </if>
+            <if test="mobileNo !=null and mobileNo != ''">
+                and  bm.mobile_no = #{mobileNo}
+            </if>
+
+        </where>
+    </sql>
+    <!--城市三级联动用   @author王诚      @date 2018年09月14日      -->
+    <select id="queryAreaByParent" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from b_area where parent_area_no = #{parentId}
+    </select>
+    
+
+
+</mapper>

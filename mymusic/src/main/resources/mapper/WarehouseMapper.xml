@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mymusic.dao.IWareHouseDao">
+    <resultMap id="BaseResultMap" type="com.example.mymusic.entity.Warehouse">
+        <id 	 column="id"                           jdbcType="BIGINT"        property="id" />
+        <result  column="warehouse_name"               jdbcType="VARCHAR"       property="wareHouseName"/>
+        <result  column="area"                         jdbcType="VARCHAR"       property="area"/>
+        <result  column="address"                      jdbcType="VARCHAR"       property="address"/>
+        <result  column="house_manager"                jdbcType="VARCHAR"       property="HouseManager"/>
+        <result  column="longitude"                    jdbcType="VARCHAR"       property="longitude"/>
+        <result  column="latitude"                     jdbcType="VARCHAR"       property="latitude"/>
+        <result  column="create_time"                  jdbcType="TIMESTAMP"     property="createTime"/>
+        <result  column="goods_count"                  jdbcType="BIGINT"        property="goodsCount"/>
+        <result  column="goods_type_count"             jdbcType="BIGINT"        property="goodsTypeCount"/>
+        <result  column="cover"                        jdbcType="VARCHAR"       property="cover"/>
+        <result  column="province"                     jdbcType="VARCHAR"       property="province"/>
+        <result  column="city"                         jdbcType="VARCHAR"       property="city"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,warehouse_name,area,address,house_manager,longitude,latitude,create_time,goods_count,goods_type_count,cover,city,province
+    </sql>
+
+    <sql id="As_Column_List">
+        t.id as id,
+        t.warehouse_name as wareHouseName,
+        t.area  as area ,
+        t.address  as address ,
+        t.house_manager as houseManager,
+        t.longitude as longitude,
+        t.latitude   as latitude,
+        t.create_time  as createTime ,
+        t.goods_count as goodsCount,
+        t.goods_type_count as goodsTypeCount,
+        t.cover as cover,
+        t.province as province,
+        t.city as city
+    </sql>
+
+    
+    <!-- 添加库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <insert id="addWarehouse" parameterType="com.example.mymusic.entity.Warehouse" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into warehouse(
+            id,warehouse_name,area,address,house_manager,longitude,latitude,create_time,goods_count,goods_type_count,cover,province,city
+        )
+        values(
+            #{id},#{wareHouseName},#{area},#{address},#{houseManager},#{longitude},#{latitude},now(),#{goodsCount},#{goodsTypeCount},#{cover},#{province},#{city}
+        )
+    </insert>
+
+    
+    <!-- 修改库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <update id="updateWarehouse" parameterType="com.example.mymusic.entity.Warehouse">
+        update warehouse
+        <set>
+            <if test="wareHouseName !=null and wareHouseName != ''">
+                warehouse_name = #{wareHouseName},
+            </if>
+            <if test="area !=null and area != ''">
+                area = #{area},
+            </if>
+            <if test="address !=null and address != ''">
+                address = #{address},
+            </if>
+            <if test="houseManager !=null and houseManager != ''">
+                house_manager = #{houseManager},
+            </if>
+            <if test="cover !=null and cover != ''">
+                cover = #{cover},
+            </if>
+            <if test="longitude !=null and longitude != ''">
+                longitude = #{longitude},
+            </if>
+            <if test="latitude !=null and latitude != ''">
+                latitude = #{latitude},
+            </if>
+            <if test="province !=null and province != ''">
+                province = #{province},
+            </if>
+            <if test="city !=null and city != ''">
+                city = #{city},
+            </if>
+            <if test="createTime !=null ">
+                create_time = #{createTime},
+            </if>
+            <if test="goodsCount !=null">
+                goodsCount = #{goodsCount},
+            </if>
+            <if test="goodsTypeCount !=null">
+                goodsTypeCount = #{goodsTypeCount},
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    
+    <!-- 删除库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <delete id="delWarehouse" parameterType="java.lang.Long">
+        delete
+        from warehouse
+       where id = #{id}
+    </delete>
+
+
+    <!-- 查询库存表     @author 聂枫     @date 2021年09月28日 18时19分06秒     -->
+    <select id="queryWarehouseByWarehouseNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/> 
+        from warehouse
+        where id = #{id}
+    </select>
+
+    <!-- 分页查询库存表数量统计 -->
+    <select id="queryWarehouseCountByCondition" parameterType="com.example.mymusic.entity.param.WarehouseParam" resultType="java.lang.Long">
+        select count(1)
+        from warehouse
+        <include refid="sqlWhere"/>
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryWarehouseByCondition" parameterType="com.example.mymusic.entity.param.WarehouseParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from warehouse
+        <include refid="sqlWhere"/>
+        order by id desc
+        limit #{start},#{limit}
+    </select>
+
+    <select id="queryWarehouseByConditionApp" parameterType="com.example.mymusic.entity.param.WarehouseParam" resultMap="BaseResultMap">
+        select  id as value,warehouse_name as label,area,address,house_manager,longitude,latitude,create_time,goods_count,goods_type_count,cover,city,province
+        from warehouse
+        <include refid="sqlWhere"/>
+        order by id
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 分页查询库存表 -->
+    <select id="queryWarehouseByConditionSortByTime" parameterType="com.example.mymusic.entity.param.WarehouseParam" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from warehouse
+        <include refid="sqlWhere"/>
+        order by create_time desc
+        limit #{start},#{limit}
+    </select>
+
+
+    <!-- 分页查询   查询条件 -->
+    <sql id="sqlWhere">
+        <where>
+            1=1
+            <if test="wareHouseName !=null and wareHouseName != ''">
+                and warehouse_name = #{wareHouseName}
+            </if>
+            <if test="area !=null and area != ''">
+                and area = #{area}
+            </if>
+            <if test="city !=null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="province !=null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="address !=null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="houseManager !=null and houseManager != ''">
+                and house_manager = #{houseManager}
+            </if>
+            <if test="longitude !=null and longitude != ''">
+                and longitude = #{longitude}
+            </if>
+            <if test="latitude !=null and latitude != ''">
+                and latitude = #{latitude}
+            </if>
+            <if test="cover !=null and cover != ''">
+                and cover = #{cover}
+            </if>
+            <if test="createTime !=null ">
+                and create_time = #{createTime}
+            </if>
+            <if test="goodsCount !=null">
+                and goodsCount = #{goodsCount}
+            </if>
+            <if test="goodsTypeCount !=null">
+                and goodsTypeCount = #{goodsTypeCount}
+            </if>
+        </where>
+    </sql>
+
+
+</mapper>
