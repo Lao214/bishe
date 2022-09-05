@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 /**
  * 管理员(Admin)实体类
- *
  * @author makejava
  * @since 2022-01-07 09:52:23
  */

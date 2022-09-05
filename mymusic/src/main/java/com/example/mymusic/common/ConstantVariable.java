@@ -2,10 +2,10 @@ package com.example.mymusic.common;
 
 /**
  * 类说明：静态变量
- *
- * @author 聂枫
- * 2016年1月4日下午10:35:14
+ * @author 劳威锟
+ * 2019年1月4日下午10:35:14
  */
+
 public class ConstantVariable {
 	
     //非注册短信验证码前缀

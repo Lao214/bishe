@@ -1,11 +1,8 @@
 package com.example.mymusic.controller;
 
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mymusic.common.Random2Utils;
-import com.example.mymusic.common.Result;
 import com.example.mymusic.common.enums.Status;
-import com.example.mymusic.common.pages.IPage;
 import com.example.mymusic.common.req.WebPageResponse;
 import com.example.mymusic.common.req.WebResponse;
 import com.example.mymusic.common.req.WebResponseCode;
@@ -14,9 +11,7 @@ import com.example.mymusic.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Random;
 
 /**
  * 管理员(Admin)表控制层

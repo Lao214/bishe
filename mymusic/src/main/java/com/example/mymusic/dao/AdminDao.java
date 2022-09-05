@@ -2,7 +2,6 @@ package com.example.mymusic.dao;
 
 
 import com.example.mymusic.entity.Admin;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +9,6 @@ import java.util.List;
 
 /**
  * 管理员(Admin)表数据库访问层
- *
  * @author makejava
  * @since 2022-01-07 09:52:18
  */

@@ -1,9 +1,6 @@
 package com.example.mymusic.service;
 
-
-import com.example.mymusic.common.pages.IPage;
 import com.example.mymusic.entity.Admin;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

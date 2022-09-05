@@ -1,16 +1,13 @@
 package com.example.mymusic.service.impl;
 
 
-import com.example.mymusic.common.enums.Status;
-import com.example.mymusic.common.pages.IPage;
+
 import com.example.mymusic.dao.AdminDao;
 import com.example.mymusic.entity.Admin;
 import com.example.mymusic.service.AdminService;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Random;
 
 /**
  * 管理员(Admin)表服务实现类
